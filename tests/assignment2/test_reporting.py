@@ -9,7 +9,9 @@ import pytest
 
 
 def data_path() -> Path:
-    return Path(__file__).resolve().parents[2] / "assignment2" / "data" / "sales_data.csv"
+    return (
+        Path(__file__).resolve().parents[2] / "assignment2" / "data" / "sales_data.csv"
+    )
 
 
 def test_sales_report_matches_expected_headers():

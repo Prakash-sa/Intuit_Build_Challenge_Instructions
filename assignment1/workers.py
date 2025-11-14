@@ -23,7 +23,9 @@ class Producer(Thread):
     def __post_init__(self) -> None:
         super().__init__(name=self.name)
 
-    def run(self) -> None:  # pragma: no cover - thread start logic covered by system tests
+    def run(
+        self,
+    ) -> None:  # pragma: no cover - thread start logic covered by system tests
         while True:
             item = self.source.read()
             if item is None:
@@ -45,7 +47,9 @@ class Consumer(Thread):
     def __post_init__(self) -> None:
         super().__init__(name=self.name)
 
-    def run(self) -> None:  # pragma: no cover - thread start logic covered by system tests
+    def run(
+        self,
+    ) -> None:  # pragma: no cover - thread start logic covered by system tests
         while True:
             item = self.buffer.get()
             if item == self.sentinel:

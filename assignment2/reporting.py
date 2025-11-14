@@ -24,7 +24,9 @@ class SalesReport:
             lines.append(f"  {region}: ${revenue:,.2f}")
 
         lines.append("\nAverage discount by category:")
-        for category, discount in sorted(self._analyzer.average_discount_by_category().items()):
+        for category, discount in sorted(
+            self._analyzer.average_discount_by_category().items()
+        ):
             lines.append(f"  {category}: {discount:.2%}")
 
         lines.append("\nTop products by revenue:")

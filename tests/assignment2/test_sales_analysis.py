@@ -7,7 +7,9 @@ from assignment2.sales_analysis import main as sales_analysis_main
 
 
 def data_path() -> Path:
-    return Path(__file__).resolve().parents[2] / "assignment2" / "data" / "sales_data.csv"
+    return (
+        Path(__file__).resolve().parents[2] / "assignment2" / "data" / "sales_data.csv"
+    )
 
 
 def test_sales_analysis_main_returns_full_report_string():

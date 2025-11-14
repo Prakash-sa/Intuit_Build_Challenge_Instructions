@@ -26,7 +26,10 @@ class SalesAnalyzer:
         accumulators: Dict[str, Tuple[float, int]] = defaultdict(lambda: (0.0, 0))
         for record in self._records:
             total_discount, count = accumulators[record.category]
-            accumulators[record.category] = (total_discount + record.discount, count + 1)
+            accumulators[record.category] = (
+                total_discount + record.discount,
+                count + 1,
+            )
         return {
             category: total_discount / count
             for category, (total_discount, count) in accumulators.items()
@@ -37,9 +40,9 @@ class SalesAnalyzer:
         revenue_map: Dict[str, float] = defaultdict(float)
         for record in self._records:
             revenue_map[record.product] += record.revenue
-        return sorted(
-            revenue_map.items(), key=lambda item: item[1], reverse=True
-        )[:limit]
+        return sorted(revenue_map.items(), key=lambda item: item[1], reverse=True)[
+            :limit
+        ]
 
     def monthly_sales_summary(self) -> Dict[str, Dict[str, float]]:
         summary: Dict[str, Dict[str, float]] = defaultdict(
@@ -53,7 +56,9 @@ class SalesAnalyzer:
         return dict(summary)
 
     def best_salesperson_by_region(self) -> Dict[str, Tuple[str, float]]:
-        region_sales: Dict[str, Dict[str, float]] = defaultdict(lambda: defaultdict(float))
+        region_sales: Dict[str, Dict[str, float]] = defaultdict(
+            lambda: defaultdict(float)
+        )
         for record in self._records:
             region_sales[record.region][record.salesperson] += record.revenue
 

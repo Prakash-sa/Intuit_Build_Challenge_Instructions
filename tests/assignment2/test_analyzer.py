@@ -9,7 +9,9 @@ from assignment2.data_loader import CSVSalesLoader
 
 
 def analyzer() -> SalesAnalyzer:
-    data_path = Path(__file__).resolve().parents[2] / "assignment2" / "data" / "sales_data.csv"
+    data_path = (
+        Path(__file__).resolve().parents[2] / "assignment2" / "data" / "sales_data.csv"
+    )
     loader = CSVSalesLoader(data_path)
     return SalesAnalyzer(loader.load())
 
@@ -27,7 +29,9 @@ def test_total_revenue_by_region_matches_expected_totals():
 def test_average_discount_by_category_handles_multiple_entries():
     averages = analyzer().average_discount_by_category()
     assert pytest.approx(averages["Software"], rel=1e-3) == 0.05
-    assert pytest.approx(averages["Services"], rel=1e-3) == pytest.approx(0.0833333333, rel=1e-3)
+    assert pytest.approx(averages["Services"], rel=1e-3) == pytest.approx(
+        0.0833333333, rel=1e-3
+    )
 
 
 def test_top_products_by_revenue_supports_limit():

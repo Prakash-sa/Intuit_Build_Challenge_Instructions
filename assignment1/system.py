@@ -33,10 +33,18 @@ class ProducerConsumerSystem:
         self.destination = destination or DestinationContainer()
         self.buffer = buffer or BoundedBuffer(queue_capacity)
         self._sentinel = sentinel
-        self._producer_factory = producer_factory or (lambda s, b, mark: Producer(s, b, mark))
-        self._consumer_factory = consumer_factory or (lambda d, b, mark: Consumer(d, b, mark))
-        self._producer = self._producer_factory(self.source, self.buffer, self._sentinel)
-        self._consumer = self._consumer_factory(self.destination, self.buffer, self._sentinel)
+        self._producer_factory = producer_factory or (
+            lambda s, b, mark: Producer(s, b, mark)
+        )
+        self._consumer_factory = consumer_factory or (
+            lambda d, b, mark: Consumer(d, b, mark)
+        )
+        self._producer = self._producer_factory(
+            self.source, self.buffer, self._sentinel
+        )
+        self._consumer = self._consumer_factory(
+            self.destination, self.buffer, self._sentinel
+        )
 
     def transfer_all(self) -> List[str]:
         """Start the workflow and wait until the consumer drains the queue."""
