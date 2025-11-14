@@ -8,7 +8,7 @@ from assignment2.reporting import run_report
 
 
 def main() -> None:
-    data_path = Path(__file__).resolve().parent / "data" / "sales_data.csv"
+    data_path = Path(__file__).resolve().parents[1] / "data" / "sales_data.csv"
     print(run_report(data_path))
 
 

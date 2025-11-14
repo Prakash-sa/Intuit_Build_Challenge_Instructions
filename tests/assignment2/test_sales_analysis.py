@@ -3,20 +3,18 @@
 from pathlib import Path
 
 from assignment2 import run_report
-from assignment2.sales_analysis import main as sales_analysis_main
+from assignment2.sales_analysis import main as legacy_main
 
 
-def data_path() -> Path:
-    return (
-        Path(__file__).resolve().parents[2] / "assignment2" / "data" / "sales_data.csv"
-    )
+def fixture_path() -> Path:
+    return Path(__file__).resolve().parents[2] / "data" / "sales_data.csv"
 
 
-def test_sales_analysis_main_returns_full_report_string():
-    report = sales_analysis_main(data_path())
-    assert isinstance(report, str)
-    assert "Total revenue by region" in report
+def test_legacy_main_returns_report_string():
+    result = legacy_main(fixture_path())
+    assert isinstance(result, str)
+    assert "Total revenue by region" in result
 
 
-def test_package_run_report_matches_sales_analysis_main():
-    assert run_report(data_path()) == sales_analysis_main(data_path())
+def test_run_report_matches_legacy_main_output():
+    assert run_report(fixture_path()) == legacy_main(fixture_path())

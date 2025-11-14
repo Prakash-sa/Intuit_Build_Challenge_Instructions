@@ -123,6 +123,17 @@ pip-audit -r requirements.txt
 Every push and pull request triggers `.github/workflows/tests.yml`, which installs dependencies, enforces the copyright header,
 runs vulnerability scans via `pip-audit` and `bandit`, and executes the full pytest suite with an enforced 80% minimum coverage threshold.
 
+## Test Results
+
+The repository includes up-to-date screenshots of the automation results inside `data/`:
+
+- Assignment 1 demo output: ![Assignment 1 result](data/assignment1_result.png)
+- Assignment 2 report output: ![Assignment 2 result](data/assignment2_result.png)
+- End-to-end CI run showing linting, typing, security scans, and tests completing successfully: ![GitHub Actions summary](data/github_actions.png)
+- Local pytest run illustrating the 100% statement coverage guarantee: ![Unit test coverage](data/unit_test_coverage.png)
+
+Refer to these artifacts whenever you need visual verification without re-running the full pipeline.
+
 ## Architectural Notes
 
 - **Assignment 1 (Producer/Consumer):** `ProducerConsumerSystem` accepts injectable source/destination/buffer instances and producer/consumer factories, so the orchestration layer adheres to Dependency Inversion and is easy to extend (e.g., swapping queue types or sentinels for different deployments).

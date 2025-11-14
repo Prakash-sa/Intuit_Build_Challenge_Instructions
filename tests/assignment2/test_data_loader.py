@@ -7,9 +7,7 @@ import pytest
 
 
 def test_csv_loader_reads_all_rows_and_parses_types():
-    data_path = (
-        Path(__file__).resolve().parents[2] / "assignment2" / "data" / "sales_data.csv"
-    )
+    data_path = Path(__file__).resolve().parents[2] / "data" / "sales_data.csv"
     loader = CSVSalesLoader(data_path)
     records = loader.load()
 

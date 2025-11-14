@@ -9,9 +9,7 @@ from assignment2.data_loader import CSVSalesLoader
 
 
 def analyzer() -> SalesAnalyzer:
-    data_path = (
-        Path(__file__).resolve().parents[2] / "assignment2" / "data" / "sales_data.csv"
-    )
+    data_path = Path(__file__).resolve().parents[2] / "data" / "sales_data.csv"
     loader = CSVSalesLoader(data_path)
     return SalesAnalyzer(loader.load())
 
