@@ -1,16 +1,24 @@
 # Intuit Build Challenge (Python)
 
-This repository contains production-grade solutions for the two required assignments using Python 3.11+ with comprehensive unit tests and documentation.
+Production-ready implementations of the two required assignments, built with Python 3.11+, automated testing, and a hardened CI pipeline.
 
-## Project Structure
+---
 
-- `assignment1/` – Producer/consumer package split into `containers.py`, `buffer.py`, `workers.py`, and `system.py` for clear responsibilities.
-- `assignment2/` – Sales analytics package with dedicated `models.py`, `data_loader.py`, `analyzer.py`, and `reporting.py` modules.
-- `tests/` – Pytest suites covering both assignments.
-- `requirements.txt` – Minimal runtime/test dependency list (only `pytest`).
-- `Dockerfile` / `docker-compose.yml` – Containerized workflows for demos, reports, and tests.
-- `scripts/` – Tooling (e.g., copyright checker) referenced by CI.
-- `CONTRIBUTING.md` – Coding standards and workflow expectations.
+## At a Glance
+
+| Assignment | Focus | Key Modules |
+|-----------|-------|-------------|
+| Assignment 1 | Concurrent producer/consumer pipeline | `containers.py`, `buffer.py`, `workers.py`, `system.py` |
+| Assignment 2 | CSV-driven sales analytics | `models.py`, `data_loader.py`, `analyzer.py`, `reporting.py` |
+
+Additional folders:
+
+- `tests/` – Mirrored module-level pytest suites (100 % coverage).
+- `scripts/` – Support tooling (e.g., copyright enforcement).
+- `Dockerfile` & `docker-compose.yml` – Containerized demos/tests.
+- `CONTRIBUTING.md` – Coding standards and contributor workflow.
+
+---
 
 ## Getting Started
 
@@ -20,7 +28,7 @@ This repository contains production-grade solutions for the two required assignm
    source .venv/bin/activate
    pip install -r requirements.txt
    ```
-2. **Honor the repository header policy:** every Python file must begin with `# Copyright (c) 2025 Intuit Build Challenge`. You can verify locally via:
+2. **Verify headers (policy gate)**
    ```bash
    python3 scripts/check_copyright.py
    ```
@@ -28,39 +36,78 @@ This repository contains production-grade solutions for the two required assignm
    ```bash
    python3 -m assignment1.producer_consumer
    ```
-4. **Run Assignment 2 analyses (prints all results to the console)**
+4. **Run Assignment 2 analytics**
    ```bash
    python3 -m assignment2.main
    ```
-   The CLI uses `assignment2.data_loader.CSVSalesLoader` to populate `assignment2.analyzer.SalesAnalyzer`, then renders the consolidated report via `assignment2.reporting.SalesReport`.
+   The CLI wires `CSVSalesLoader` → `SalesAnalyzer` → `SalesReport` to produce the console summary.
 
-## Docker Usage
+> **Tip:** Running tests outside the repo root? Prefix commands with `PYTHONPATH=.` so the packages resolve.
 
-Build the image (done automatically when using Compose):
+---
 
+## Docker & Compose
+
+| Command | Description |
+|---------|-------------|
+| `docker compose build` | Build the shared image. |
+| `docker compose run --rm assignment1-demo` | Run the producer/consumer showcase. |
+| `docker compose run --rm assignment2-report` | Generate the sales report end-to-end. |
+| `docker compose run --rm tests` | Execute pytest with coverage inside the container. |
+
+---
+
+## Testing & Quality Gates
+
+### Core tests
 ```bash
-docker compose build
+python3 -m pytest
+python3 -m pytest --cov=. --cov-report=term --cov-fail-under=80
 ```
 
-Run the Assignment 1 demo inside a container:
-
+### Static analysis & security
 ```bash
-docker compose run --rm assignment1-demo
+ruff check . && ruff format --check .
+mypy assignment1 assignment2
+bandit -r assignment1 assignment2
+pip-audit -r requirements.txt
 ```
 
-Run the Assignment 2 report generator:
+### What the suites cover
+- Assignment 1: buffer blocking semantics, container contracts, worker coordination, CLI entry points.
+- Assignment 2: CSV ingestion, analytical aggregations, reporting façade, legacy compatibility layer.
 
-```bash
-docker compose run --rm assignment2-report
+---
+
+## Sample Assignment 1 Output
+
+```
+Producer: produced event-1 (buffer size=1)
+Producer: produced event-2 (buffer size=2)
+Producer: produced event-3 (buffer size=3)
+Consumer: consumed event-1 (buffer size=2)
+Consumer: consumed event-2 (buffer size=2)
+Producer: produced event-4 (buffer size=3)
+Consumer: consumed event-3 (buffer size=1)
+Producer: produced event-5 (buffer size=2)
+Consumer: consumed event-4 (buffer size=1)
+Producer: produced event-6 (buffer size=2)
+Consumer: consumed event-5 (buffer size=1)
+Producer: produced event-7 (buffer size=2)
+Consumer: consumed event-6 (buffer size=1)
+Producer: produced event-8 (buffer size=2)
+Consumer: consumed event-7 (buffer size=1)
+Producer: produced event-9 (buffer size=2)
+Consumer: consumed event-8 (buffer size=1)
+Producer: produced event-10 (buffer size=2)
+Consumer: consumed event-9 (buffer size=1)
+Producer: sent sentinel (buffer size=2)
+Consumer: consumed event-10 (buffer size=1)
+Consumer: received sentinel, shutting down
+Producer/Consumer transfer complete. Total events: 10 (buffer capacity=3).
 ```
 
-Execute the full pytest + coverage suite in-container:
-
-```bash
-docker compose run --rm tests
-```
-
-## Sample Output (Assignment 2)
+## Sample Assignment 2 Output
 
 ```
 Total revenue by region:
@@ -92,49 +139,37 @@ Best salesperson by region:
   West: Morgan ($6,930.00)
 ```
 
-## Testing
-
-Execute the full automated suite at any time:
-
-```bash
-python3 -m pytest
-```
-If you run tests outside the repository root, ensure `PYTHONPATH` includes the project directory, e.g. `PYTHONPATH=. python3 -m pytest`.
-
-The tests validate thread coordination invariants, buffer behavior, and every analytical query on the CSV dataset.
-
-To mirror the CI gate locally (requires `pytest-cov`), run:
-
-```bash
-python3 -m pytest --cov=. --cov-report=term --cov-fail-under=80
-```
-
-Static typing and linting:
-
-```bash
-mypy assignment1 assignment2
-ruff check . && ruff format --check .
-bandit -r assignment1 assignment2
-pip-audit -r requirements.txt
-```
+---
 
 ## Continuous Integration
 
-Every push and pull request triggers `.github/workflows/tests.yml`, which installs dependencies, enforces the copyright header,
-runs vulnerability scans via `pip-audit` and `bandit`, and executes the full pytest suite with an enforced 80% minimum coverage threshold.
+GitHub Actions workflow (`.github/workflows/tests.yml`) runs on every push/PR:
 
-## Test Results
+1. Install dependencies with deterministic versions.
+2. Enforce copyright headers.
+3. Run Ruff (lint + format check), MyPy, and security scans (`pip-audit`, `bandit`).
+4. Execute pytest with coverage (≥ 80 % enforced).
 
-The repository includes up-to-date screenshots of the automation results inside `data/`:
+Environment variables set `PYTHONPATH` to the workspace so package imports match local runs.
+
+---
+
+## Test Result Artifacts
+
+All screenshots live in `data/` for quick reference:
 
 - Assignment 1 demo output: ![Assignment 1 result](data/assignment1_result.png)
 - Assignment 2 report output: ![Assignment 2 result](data/assignment2_result.png)
-- End-to-end CI run showing linting, typing, security scans, and tests completing successfully: ![GitHub Actions summary](data/github_actions.png)
-- Local pytest run illustrating the 100% statement coverage guarantee: ![Unit test coverage](data/unit_test_coverage.png)
+- CI summary (lint/type/security/tests): ![GitHub Actions summary](data/github_actions.png)
+- Local 100 % coverage proof: ![Unit test coverage](data/unit_test_coverage.png)
 
-Refer to these artifacts whenever you need visual verification without re-running the full pipeline.
+Use these when you need visual confirmation without rerunning the pipelines.
+
+---
 
 ## Architectural Notes
 
-- **Assignment 1 (Producer/Consumer):** `ProducerConsumerSystem` accepts injectable source/destination/buffer instances and producer/consumer factories, so the orchestration layer adheres to Dependency Inversion and is easy to extend (e.g., swapping queue types or sentinels for different deployments).
-- **Assignment 2 (Analytics):** `SalesAnalyzer` focuses solely on computations; data access lives in `CSVSalesLoader`, and presentation in `SalesReport`. This separation keeps Single Responsibility intact and allows alternative loaders/reporters to be plugged in without touching the analyzer.
+- **Assignment 1:** `ProducerConsumerSystem` accepts injectable dependencies (source, destination, buffer, worker factories) which keeps the orchestration class closed for modification yet open for extension. Threads coordinate via a bounded buffer and sentinel token to demonstrate the producer–consumer pattern with explicit synchronization.
+- **Assignment 2:** `SalesAnalyzer` remains pure analytics. `CSVSalesLoader` handles IO and parsing, while `SalesReport` encapsulates presentation. This enforces Single Responsibility and makes it easy to swap loaders/reporters without touching the business logic.
+
+For contribution details, coding standards, and workflow expectations, consult `CONTRIBUTING.md`.

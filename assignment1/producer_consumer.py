@@ -13,11 +13,15 @@ __all__ = ["BoundedBuffer", "ProducerConsumerSystem", "demo_run"]
 def demo_run() -> None:
     """Execute a sample transfer to showcase thread coordination."""
     payload = [f"event-{idx}" for idx in range(1, 11)]
-    system = ProducerConsumerSystem(payload, queue_capacity=3)
+    system = ProducerConsumerSystem(
+        payload,
+        queue_capacity=3,
+        trace=lambda message: print(message),
+    )
     results = system.transfer_all()
-    print("Producer/Consumer transfer complete:")
-    for item in results:
-        print(f"  -> {item}")
+    print(
+        f"Producer/Consumer transfer complete. Total events: {len(results)} (buffer capacity={system.buffer.capacity})."
+    )
 
 
 if __name__ == "__main__":

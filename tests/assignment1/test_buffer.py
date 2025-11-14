@@ -49,3 +49,13 @@ def test_get_blocks_until_item_available():
     worker.join()
     assert item == "available"
     assert elapsed >= 0.2
+
+
+def test_bounded_buffer_reports_size_and_capacity():
+    buffer = BoundedBuffer(2)
+    assert buffer.capacity == 2
+    assert buffer.size == 0
+    buffer.put("item")
+    assert buffer.size == 1
+    buffer.get()
+    assert buffer.size == 0

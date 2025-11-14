@@ -8,10 +8,14 @@ from typing import Callable, Iterable, List, Optional
 
 from assignment1.buffer import BoundedBuffer
 from assignment1.containers import DestinationContainer, SourceContainer
-from assignment1.workers import Consumer, Producer
+from assignment1.workers import Consumer, Producer, TraceSink
 
-ProducerFactory = Callable[[SourceContainer, BoundedBuffer, str], Producer]
-ConsumerFactory = Callable[[DestinationContainer, BoundedBuffer, str], Consumer]
+ProducerFactory = Callable[
+    [SourceContainer, BoundedBuffer, str, Optional[TraceSink]], Producer
+]
+ConsumerFactory = Callable[
+    [DestinationContainer, BoundedBuffer, str, Optional[TraceSink]], Consumer
+]
 
 
 class ProducerConsumerSystem:
@@ -28,22 +32,24 @@ class ProducerConsumerSystem:
         buffer: Optional[BoundedBuffer] = None,
         producer_factory: Optional[ProducerFactory] = None,
         consumer_factory: Optional[ConsumerFactory] = None,
+        trace: Optional[TraceSink] = None,
     ) -> None:
         self.source = source or SourceContainer(payload)
         self.destination = destination or DestinationContainer()
         self.buffer = buffer or BoundedBuffer(queue_capacity)
         self._sentinel = sentinel
+        self._trace = trace
         self._producer_factory = producer_factory or (
-            lambda s, b, mark: Producer(s, b, mark)
+            lambda s, b, mark, tracer: Producer(s, b, mark, trace=tracer)
         )
         self._consumer_factory = consumer_factory or (
-            lambda d, b, mark: Consumer(d, b, mark)
+            lambda d, b, mark, tracer: Consumer(d, b, mark, trace=tracer)
         )
         self._producer = self._producer_factory(
-            self.source, self.buffer, self._sentinel
+            self.source, self.buffer, self._sentinel, self._trace
         )
         self._consumer = self._consumer_factory(
-            self.destination, self.buffer, self._sentinel
+            self.destination, self.buffer, self._sentinel, self._trace
         )
 
     def transfer_all(self) -> List[str]:

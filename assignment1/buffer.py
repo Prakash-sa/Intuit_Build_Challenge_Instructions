@@ -35,3 +35,13 @@ class BoundedBuffer:
             item = self._buffer.popleft()
             self._condition.notify_all()
             return item
+
+    @property
+    def size(self) -> int:
+        """Current number of items in the buffer."""
+        with self._condition:
+            return len(self._buffer)
+
+    @property
+    def capacity(self) -> int:
+        return self._capacity

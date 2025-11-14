@@ -65,3 +65,23 @@ def test_consumer_handles_sentinel_first_without_writes():
     consumer.join(timeout=1)
 
     assert destination.snapshot() == []
+
+
+def test_trace_sink_receives_producer_and_consumer_events():
+    events = []
+    buffer = BoundedBuffer(2)
+    source = SourceContainer(["alpha"])
+    destination = DestinationContainer()
+    sentinel = "__STOP__"
+
+    producer = Producer(source, buffer, sentinel, trace=events.append)
+    consumer = Consumer(destination, buffer, sentinel, trace=events.append)
+
+    producer.start()
+    consumer.start()
+    producer.join(timeout=1)
+    consumer.join(timeout=1)
+
+    assert any("produced alpha" in event for event in events)
+    assert any("consumed alpha" in event for event in events)
+    assert any("sentinel" in event for event in events)
