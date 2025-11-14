@@ -1,0 +1,11 @@
+order_id,date,region,salesperson,product,category,quantity,unit_price,discount
+1001,2025-01-05,North,Avery,Cloud Suite,Software,5,1200,0.05
+1002,2025-01-12,West,Morgan,Accounting Plus,Software,3,900,0.10
+1003,2025-02-02,South,Jamie,Analytics Pro,Software,2,2000,0.00
+1004,2025-02-15,North,Taylor,Support Retainer,Services,10,250,0.15
+1005,2025-03-03,East,Riley,Cloud Suite,Software,4,1200,0.05
+1006,2025-03-18,West,Morgan,Implementation,Services,1,5000,0.10
+1007,2025-04-09,South,Jordan,Support Retainer,Services,6,250,0.00
+1008,2025-04-12,East,Casey,Analytics Pro,Software,1,2000,0.05
+1009,2025-05-01,North,Avery,Cloud Suite,Software,3,1200,0.00
+1010,2025-05-20,West,Leslie,Cloud Suite,Software,2,1200,0.10
