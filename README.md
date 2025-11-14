@@ -99,6 +99,7 @@ Execute the full automated suite at any time:
 ```bash
 python3 -m pytest
 ```
+If you run tests outside the repository root, ensure `PYTHONPATH` includes the project directory, e.g. `PYTHONPATH=. python3 -m pytest`.
 
 The tests validate thread coordination invariants, buffer behavior, and every analytical query on the CSV dataset.
 
